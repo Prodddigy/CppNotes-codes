@@ -1,75 +1,108 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <algorithm>
 
-struct student
-{
+
+auto printV(std::vector<int> const& z) -> void {
+            //const - make it read only do not modify it
+            //like final from java
+    for(int a : z)
+    {
+        std::cout << a << " ";
+    }
+    std::cout << '\n';
+   // z.clear();
+}
+
+auto modify(int& z) ->void {
+    z=10;
+}
+auto modify(std::vector<int>& z) -> void {
+    z.push_back(123);
+}
+
+struct student{
     std::string name;
     std::string surname;
     int s;
-};
-int main() {
-
-   // auto s1 = student("Michel","Smith",1234);
-    //std::cout << s1.name << ' ' << s1.surname << ' ' << s1.s;
-
-    auto students = std::vector<student>{
-            student("Michel","Smith",1234),
-            student("Ada","Smith",1334),
-            student("Joe","Smith",1884)
-
-    };
-
 /*
-    std::ranges::sort(students,[](student lhs, student rhs)->bool
+    student(std::string name, std::string surname, int s )
     {
-        return lhs.s > rhs.s;
-    });
-
-
-
-
-    for(auto sud : students)
-    {
-        std::cout << sud.name << ' ' << sud.surname << ' ' << sud.s<<'\n';
+        name = name;
+        surname = surname;
+        s=s;
     }
-
-    auto student_with_greatest_s = std::ranges::max(students,[](student lhs, student rhs)->bool
-    {
-        return lhs.s > rhs.s;
-    });
-
-    std::cout <<'\n' << student_with_greatest_s.name;
-*/
-
-/*
-    std::cout << std::ranges::count_if(students, [](student s) -> bool {
-       return s.name.size() <= 3;
-    });
     */
 
-/*
-    auto vec = std::vector<int>{1,2,9,3,4,7};
-
-
-    std::ranges::transform(vec, vec.begin(),[](int x)->int
+student(std::string name, std::string surname, int s)
+: name(name), surname(surname), s(s)
     {
-        return x *10;
+    std::cout << "student created \n";
+    }
+
+    student(student const& other)
+    : name(other.name), surname(other.surname), s(other.s)
+    {
+        std::cout << "student copied \n";
+    }
+
+    ~student()
+    {
+    std::cout << "student destroyed \n";
+    }
+};
+
+auto count_students_with_equal_name(std::vector<student> const& students, student const& to_search) {
+
+    return std::ranges::count_if(students,[to_search](student const& s){
+        return s.name == to_search.name;
     });
+}
 
-    for (auto e : vec)
-    {
-        std::cout << e << " ";
-    }
-*/
-    auto student_with_greatest_s = std::ranges::max(students,{},[](student stud) -> int
-    {
-        return stud.s;
-    }
-    );
+int main() {
+    auto vec = std::vector<int>{1,2,3,1,2,3,4};
 
-    std::cout << student_with_greatest_s.name;
+   // auto x= 5;
+  //  modify(x);
+   // auto& ref = x;
+  //  ref = 10;
+
+    //std::cout << x << '\n';
+
+   // printV(vec);
+  //  std::cout<< '\n';
+  //  modify(vec);
+
+   // printV(vec);
+  //  printV(vec);
+
+  ////  auto stud = student("Leo", "Da Vinci",66);
+
+  ////  auto copy = stud;
+ // stud.name = "Leonardo";
+  ////std::cout << stud.name << '\n';
+
+  ////  std::cout << copy.name << '\n';
 
 
+   //// stud.name = "John";
+
+////    std::cout << stud.name << '\n';
+  ////  std::cout << copy.name << '\n';
+
+
+    auto students = std::vector<student> {
+            student("Damian", "Da Vinci",66),
+            student("Leo", "Da Vinci",66),
+            student("Ola", "Da Vinci",66),
+            student("Leo", "Da Vinci",66),
+            student("Saba", "Da Vinci",66),
+            student("Saba", "Da Vinci",66)
+
+    };
+    std::cout << "copies ^ "<< '\n';
+
+  std::cout << "how many saba's? :" <<  count_students_with_equal_name(students,student("Saba", "Da Vinci",66)) << '\n';
+
+    std::cout << "copies ^ " << '\n';
 }
