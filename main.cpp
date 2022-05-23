@@ -1,108 +1,140 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <math.h>
 
 
-auto printV(std::vector<int> const& z) -> void {
-            //const - make it read only do not modify it
-            //like final from java
-    for(int a : z)
-    {
-        std::cout << a << " ";
-    }
-    std::cout << '\n';
-   // z.clear();
-}
+        struct point{
+            int x;
+            int y;
 
-auto modify(int& z) ->void {
-    z=10;
-}
-auto modify(std::vector<int>& z) -> void {
-    z.push_back(123);
-}
+            point(int x, int y)
+            : x(x), y(y)
+            {
 
-struct student{
-    std::string name;
-    std::string surname;
-    int s;
-/*
-    student(std::string name, std::string surname, int s )
-    {
-        name = name;
-        surname = surname;
-        s=s;
-    }
-    */
+            }
+        };
 
-student(std::string name, std::string surname, int s)
-: name(name), surname(surname), s(s)
-    {
-    std::cout << "student created \n";
-    }
 
-    student(student const& other)
-    : name(other.name), surname(other.surname), s(other.s)
-    {
-        std::cout << "student copied \n";
-    }
+        bool distance_between(point a , point b, point search)
+        {
+            return sqrt(pow(a.x-b.x,2)+pow(a.y-b.y,2))
+                                     >
+                    sqrt(pow(a.x-search.x,2)+pow(a.y-search.y,2));
 
-    ~student()
-    {
-    std::cout << "student destroyed \n";
-    }
-};
+        }
 
-auto count_students_with_equal_name(std::vector<student> const& students, student const& to_search) {
+        point closest(std::vector<point> points, point search)
+                {
 
-    return std::ranges::count_if(students,[to_search](student const& s){
-        return s.name == to_search.name;
-    });
-}
+                    return std::ranges::min(points, [search](point a, point b )
+                    {//for each loop would be ok too :'(
+                        return(distance_between(a,b,search));
+                    });
+
+              }
+
+
+
+        enum comparing_by
+        {
+            name,
+            mana_cost,
+            power,
+            health
+        };
+
+
+        struct card{
+            std::string name;
+            int mana;
+            int power;
+            int health;
+
+            card(std::string name, int mana, int power, int health)
+            : name(name), mana(mana), power(power),health(health)
+            {
+
+            }
+        };
+
+
+
+
+        bool compare(card a , card b, comparing_by value)
+        {
+            switch (value)
+            {
+                case comparing_by::name : {
+
+                    return a.name < b.name;
+
+                    break;
+                }
+                case comparing_by::mana_cost : {
+
+                    return a.mana < b.mana;
+
+                    break;
+                }
+                case comparing_by::power : {
+
+                    return a.power < b.power;
+
+                    break;
+                }
+                case comparing_by::health : {
+
+                    return a.health < b.health;
+
+                    break;
+                }
+                default:{
+
+                }
+            }
+
+        }
+
+
+      card static max(std::vector<card> cards, comparing_by value)
+        {
+
+         return std::ranges::max(cards,[value](card a, card b){
+
+             return compare(a,b,value);
+         });
+
+        }
+
+
 
 int main() {
-    auto vec = std::vector<int>{1,2,3,1,2,3,4};
 
-   // auto x= 5;
-  //  modify(x);
-   // auto& ref = x;
-  //  ref = 10;
-
-    //std::cout << x << '\n';
-
-   // printV(vec);
-  //  std::cout<< '\n';
-  //  modify(vec);
-
-   // printV(vec);
-  //  printV(vec);
-
-  ////  auto stud = student("Leo", "Da Vinci",66);
-
-  ////  auto copy = stud;
- // stud.name = "Leonardo";
-  ////std::cout << stud.name << '\n';
-
-  ////  std::cout << copy.name << '\n';
-
-
-   //// stud.name = "John";
-
-////    std::cout << stud.name << '\n';
-  ////  std::cout << copy.name << '\n';
-
-
-    auto students = std::vector<student> {
-            student("Damian", "Da Vinci",66),
-            student("Leo", "Da Vinci",66),
-            student("Ola", "Da Vinci",66),
-            student("Leo", "Da Vinci",66),
-            student("Saba", "Da Vinci",66),
-            student("Saba", "Da Vinci",66)
-
+    auto points = std::vector<point> {
+            point(7,5),
+            point(10,2),
+            point(5,1),
+            point(0,4),
+            point(2,8),
+            point(6,11)
     };
-    std::cout << "copies ^ "<< '\n';
 
-  std::cout << "how many saba's? :" <<  count_students_with_equal_name(students,student("Saba", "Da Vinci",66)) << '\n';
+    auto search = point(0,0);
 
-    std::cout << "copies ^ " << '\n';
+   std::cout<< closest(points,search).x <<closest(points,search).y << '\n';
+
+    auto cards = std::vector<card> {
+            card("Goblin Snowman",7,5,3),
+            card("Hidden Dragon Slayer",10,2,6),
+            card("Ice Thing",5,1,0),
+            card("Black lotus",0,4,44),
+            card("Disciple of the Ring",2,8,1),
+            card("Angel of Deliverance",6,11,9)
+    };
+
+
+
+ std::cout<<  max(cards, mana_cost).name <<" which has the greatest stat of " << max(cards, mana_cost).mana << '\n';
+
 }
